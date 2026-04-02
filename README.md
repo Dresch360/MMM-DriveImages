@@ -44,9 +44,7 @@ Add this to your `config.js`:
 
 ```js
 {
-  disabled: false,
   module: "MMM-DriveImages",
-  classes: "hide",
   position: "fullscreen_above",
   config: {
     driveRemote: "drive:mirror-images",
