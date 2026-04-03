@@ -110,7 +110,7 @@ MagicMirror will restart automatically.
 2. Open the folder: `mirror-images`
 3. Tap `+` → Upload
 4. Press and hold one photo, then select multiple
-5. Tap Upload or Select
+5. Tap Select → Upload
 
 Images will appear automatically within a few minutes.
 
