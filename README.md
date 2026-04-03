@@ -63,7 +63,8 @@ Add this to your `config.js`:
     animationSpeed: 1000,
     playMode: "linear",       //"linear" or "random"
     touchControls: true,     // enable tap + swipe controls
-    objectFit: "cover"       // "cover" or "contain"
+    objectFit: "cover",       // "cover" or "contain"
+    showArrows: true
   }
 },
 ```
