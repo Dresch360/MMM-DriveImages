@@ -62,9 +62,9 @@ Add this to your `config.js`:
     slideshowInterval: 10000,
     animationSpeed: 1000,
     playMode: "linear",       //"linear" or "random"
-    touchControls: true,     // enable tap + swipe controls
+    touchControls: true,      // enable tap + swipe controls
     objectFit: "cover",       // "cover" or "contain"
-    showArrows: true
+    showArrows: true          // click left/right arrows for previous or next image
   }
 },
 ```
