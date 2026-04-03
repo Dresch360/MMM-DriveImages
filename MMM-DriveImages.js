@@ -6,7 +6,8 @@ Module.register("MMM-DriveImages", {
     driveRemote: "drive:mirror-images",
     imagePath: "/home/pi/MagicMirror/modules/MMM-DriveImages/public/images",
     slideshowInterval: 10000,
-    animationSpeed: 1000
+    animationSpeed: 1000,
+    playMode: "linear"
   },
 
   start: function () {
@@ -26,10 +27,31 @@ Module.register("MMM-DriveImages", {
     this.startSlideshow();
   },
 
+  getNextIndex: function () {
+    if (!this.images || this.images.length === 0) {
+      return 0;
+    }
+
+    if (this.config.playMode === "random") {
+      if (this.images.length === 1) {
+        return 0;
+      }
+
+      let next;
+      do {
+        next = Math.floor(Math.random() * this.images.length);
+      } while (next === this.currentIndex);
+
+      return next;
+    }
+
+    return (this.currentIndex + 1) % this.images.length;
+  },
+
   startSlideshow: function () {
     setInterval(() => {
       if (this.images.length > 1) {
-        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+        this.currentIndex = this.getNextIndex();
         this.updateDom(this.config.animationSpeed);
       }
     }, this.config.slideshowInterval);
