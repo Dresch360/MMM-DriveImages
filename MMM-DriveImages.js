@@ -138,7 +138,10 @@ Module.register("MMM-DriveImages", {
         arrow.style.padding = "10px";
         arrow.style.cursor = "pointer";
         arrow.style.userSelect = "none";
-
+        arrow.style.opacity = "0.15";
+        arrow.style.background = "transparent";
+        arrow.style.fontSize = "40px";
+        
         arrow.addEventListener("click", () => {
           dir === "left" ? this.showPrevImage() : this.showNextImage();
         });
