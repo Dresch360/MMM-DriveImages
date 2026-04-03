@@ -17,6 +17,7 @@ No API keys. No Google developer setup. Simple browser-based authentication.
 * Simple setup for non-technical users
 * Works with personal Google accounts
 * Linear or random play
+* Tap or click to advance images
 
 ---
 
@@ -72,6 +73,7 @@ Add this to your `config.js`:
 | `syncOnStart`       | Run a sync immediately on startup        | `true`                  |
 | `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
 | `playMode`          | Playback order for images                | `"linear"`              |
+| `tapToAdvance`      | Tap or click to advance image            | `true`                  |
 
 ---
 ### Playback Modes
