@@ -9,10 +9,24 @@ CONF="/home/pi/.config/rclone/rclone.conf"
 clear
 echo "Google Drive Photo Setup"
 echo
-echo "When prompted:"
-echo "- type y to authenticate in the browser"
-echo "- type n for Shared Drive"
-echo
+echo ""
+echo "======================================="
+echo " GOOGLE SIGN-IN REQUIRED"
+echo "======================================="
+echo ""
+echo "When prompted, type EXACTLY:"
+echo ""
+echo "1. Already have a token?  -> n"
+echo "2. Shared Drive?          -> n"
+echo "3. Use web browser?       -> y"
+echo ""
+echo "A browser window WILL open."
+echo "Sign into your Google account and click Continue."
+echo ""
+echo "DO NOT copy or paste any codes."
+echo ""
+echo "======================================="
+echo ""
 
 mkdir -p /home/pi/.config/rclone
 
