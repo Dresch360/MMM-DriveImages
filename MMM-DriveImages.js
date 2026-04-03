@@ -103,10 +103,6 @@ Module.register("MMM-DriveImages", {
       let touchStartX = 0;
       let touchEndX = 0;
 
-      img.addEventListener("click", () => {
-        this.paused = !this.paused;
-      });
-
       img.addEventListener(
         "touchstart",
         (e) => {
@@ -133,6 +129,12 @@ Module.register("MMM-DriveImages", {
         },
         { passive: true }
       );
+
+      img.addEventListener("pointerup", (e) => {
+        if (e.pointerType === "mouse") {
+          this.paused = !this.paused;
+        }
+      });
     }
 
     wrapper.appendChild(img);
