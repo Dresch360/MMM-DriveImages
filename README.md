@@ -77,7 +77,6 @@ Add this to your `config.js`:
 | `syncOnStart`       | Run a sync immediately on startup        | `true`                  |
 | `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
 | `playMode`          | Playback order for images                | `"linear"`              |
-| `tapToAdvance`      | Tap or click to advance image            | `true`                  |
 | `touchControls`     | Enable tap to pause and swipe navigation | `true`                  |
 | `objectFit`         | Image fit mode (`"cover"` = fill screen, `"contain"` = no cropping) | `"cover"`|
 
