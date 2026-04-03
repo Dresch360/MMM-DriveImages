@@ -71,7 +71,7 @@ Add this to your `config.js`:
 | `slideshowInterval` | Time between image changes (ms)          | `10000`                 |
 | `syncOnStart`       | Run a sync immediately on startup        | `true`                  |
 | `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
-| `playMode`          | Playback order for images                | `"linear"`                |
+| `playMode`          | Playback order for images                | `"linear"`              |
 
 ---
 ### Playback Modes
