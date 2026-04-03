@@ -9,7 +9,8 @@ Module.register("MMM-DriveImages", {
     animationSpeed: 1000,
     playMode: "linear",
     touchControls: true,
-    objectFit: "cover"
+    objectFit: "cover",
+    showArrows: true
   },
 
   start: function () {
@@ -31,14 +32,10 @@ Module.register("MMM-DriveImages", {
   },
 
   getNextIndex: function () {
-    if (!this.images || this.images.length === 0) {
-      return 0;
-    }
+    if (!this.images || this.images.length === 0) return 0;
 
     if (this.config.playMode === "random") {
-      if (this.images.length === 1) {
-        return 0;
-      }
+      if (this.images.length === 1) return 0;
 
       let next;
       do {
@@ -76,6 +73,7 @@ Module.register("MMM-DriveImages", {
 
   getDom: function () {
     const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
     wrapper.style.width = "100%";
     wrapper.style.height = "100%";
     wrapper.style.overflow = "hidden";
@@ -94,41 +92,26 @@ Module.register("MMM-DriveImages", {
     img.src = this.images[this.currentIndex];
     img.style.width = "100%";
     img.style.height = "100%";
-    img.style.display = "block";
-    img.style.objectFit = this.config.objectFit || "cover";
+    img.style.objectFit = this.config.objectFit;
 
+    // Touch + click behavior
     if (this.config.touchControls) {
-      img.style.cursor = "pointer";
+      let startX = 0;
 
-      let touchStartX = 0;
-      let touchEndX = 0;
+      img.addEventListener("touchstart", (e) => {
+        startX = e.changedTouches[0].screenX;
+      }, { passive: true });
 
-      img.addEventListener(
-        "touchstart",
-        (e) => {
-          touchStartX = e.changedTouches[0].screenX;
-        },
-        { passive: true }
-      );
+      img.addEventListener("touchend", (e) => {
+        const endX = e.changedTouches[0].screenX;
+        const diff = endX - startX;
 
-      img.addEventListener(
-        "touchend",
-        (e) => {
-          touchEndX = e.changedTouches[0].screenX;
-          const diff = touchEndX - touchStartX;
-
-          if (Math.abs(diff) > 50) {
-            if (diff < 0) {
-              this.showNextImage();
-            } else {
-              this.showPrevImage();
-            }
-          } else {
-            this.paused = !this.paused;
-          }
-        },
-        { passive: true }
-      );
+        if (Math.abs(diff) > 50) {
+          diff < 0 ? this.showNextImage() : this.showPrevImage();
+        } else {
+          this.paused = !this.paused;
+        }
+      }, { passive: true });
 
       img.addEventListener("pointerup", (e) => {
         if (e.pointerType === "mouse") {
@@ -138,6 +121,35 @@ Module.register("MMM-DriveImages", {
     }
 
     wrapper.appendChild(img);
+
+    // Arrows
+    if (this.config.showArrows && this.images.length > 1) {
+      const createArrow = (dir) => {
+        const arrow = document.createElement("div");
+        arrow.innerHTML = dir === "left" ? "◀" : "▶";
+
+        arrow.style.position = "absolute";
+        arrow.style.top = "50%";
+        arrow.style[dir === "left" ? "left" : "right"] = "20px";
+        arrow.style.transform = "translateY(-50%)";
+        arrow.style.fontSize = "40px";
+        arrow.style.color = "white";
+        arrow.style.background = "rgba(0,0,0,0.3)";
+        arrow.style.padding = "10px";
+        arrow.style.cursor = "pointer";
+        arrow.style.userSelect = "none";
+
+        arrow.addEventListener("click", () => {
+          dir === "left" ? this.showPrevImage() : this.showNextImage();
+        });
+
+        return arrow;
+      };
+
+      wrapper.appendChild(createArrow("left"));
+      wrapper.appendChild(createArrow("right"));
+    }
+
     return wrapper;
   },
 
