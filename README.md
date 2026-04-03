@@ -60,6 +60,15 @@ Add this to your `config.js`:
   }
 },
 ```
+## Configuration Options
+
+| Option              | Description                              | Default                 |
+| ------------------- | ---------------------------------------- | ----------------------- |
+| `driveRemote`       | Google Drive folder to sync from         | `"drive:mirror-images"` |
+| `syncInterval`      | How often to sync with Google Drive (ms) | `2 * 60 * 1000`         |
+| `slideshowInterval` | Time between image changes (ms)          | `10000`                 |
+| `syncOnStart`       | Run a sync immediately on startup        | `true`                  |
+| `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
 
 ---
 
