@@ -111,7 +111,7 @@ Images will appear automatically within a few minutes.
 
 ## Notes
 
-* The folder `mirror-images` is created automatically during setup
+* The Google Drive folder `mirror-images` is created automatically during setup
 * Folder name must be exactly: `mirror-images` (all lowercase)
 * Supported formats: JPG, PNG, GIF, WEBP
 * Updates happen automatically (~2 minutes)
