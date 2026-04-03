@@ -61,7 +61,7 @@ Add this to your `config.js`:
     syncTimeout: 120000,
     slideshowInterval: 10000,
     animationSpeed: 1000,
-    playMode: "linear"       //"linear" or "random"
+    playMode: "linear",       //"linear" or "random"
     touchControls: true,     // enable tap + swipe controls
     objectFit: "cover"       // "cover" or "contain"
   }
@@ -86,8 +86,8 @@ Add this to your `config.js`:
 ### Playback Modes
 - `linear` = plays images in order
 - `random` = randomizes the next image
-- 'cover' = fills screen (may crop)
-- 'contain' = shows full image (may have borders)
+- `cover` = fills screen (may crop)
+- `contain` = shows full image (may have borders)
 
 ## Setup (First Time)
 
