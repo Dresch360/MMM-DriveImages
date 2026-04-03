@@ -16,6 +16,7 @@ No API keys. No Google developer setup. Simple browser-based authentication.
 * Automatic background syncing (no cron needed)
 * Simple setup for non-technical users
 * Works with personal Google accounts
+* Linear or random play
 
 ---
 
@@ -56,7 +57,8 @@ Add this to your `config.js`:
     syncOnStart: true,
     syncTimeout: 120000,
     slideshowInterval: 10000,
-    animationSpeed: 1000
+    animationSpeed: 1000,
+    playMode: "linear"
   }
 },
 ```
@@ -69,8 +71,12 @@ Add this to your `config.js`:
 | `slideshowInterval` | Time between image changes (ms)          | `10000`                 |
 | `syncOnStart`       | Run a sync immediately on startup        | `true`                  |
 | `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
+| `playMode`          | Playback order for images                | `"linear"`                |
 
 ---
+### Playback Modes
+- `linear` = plays images in order
+- `random` = randomizes the next image
 
 ## Setup (First Time)
 
