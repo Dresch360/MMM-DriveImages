@@ -11,13 +11,15 @@ No API keys. No Google developer setup. Simple browser-based authentication.
 
 ## Features
 
-* Displays images from Google Drive
-* Uses rclone (no API keys required)
-* Automatic background syncing (no cron needed)
-* Simple setup for non-technical users
-* Works with personal Google accounts
-* Linear or random play
-* Tap or click to advance images
+- Displays images from a Google Drive folder  
+- Uses rclone with simple browser authentication (no API keys required)  
+- Automatic background syncing (no cron jobs)  
+- Local image playback for smooth performance  
+- Linear or random playback modes  
+- Tap or click to pause and resume slideshow  
+- Swipe left or right to navigate images  
+- Configurable image fit (`cover` or `contain`)  
+- Designed for non-technical users  
 
 ---
 
@@ -59,7 +61,9 @@ Add this to your `config.js`:
     syncTimeout: 120000,
     slideshowInterval: 10000,
     animationSpeed: 1000,
-    playMode: "linear"
+    playMode: "linear"       //"linear" or "random"
+    touchControls: true,     // enable tap + swipe controls
+    objectFit: "cover"       // "cover" or "contain"
   }
 },
 ```
@@ -74,11 +78,16 @@ Add this to your `config.js`:
 | `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
 | `playMode`          | Playback order for images                | `"linear"`              |
 | `tapToAdvance`      | Tap or click to advance image            | `true`                  |
+| `touchControls`     | Enable tap to pause and swipe navigation | `true`                  |
+| `objectFit`         | Image fit mode (`"cover"` = fill screen, `"contain"` = no cropping) | `"cover"`|
 
 ---
+
 ### Playback Modes
 - `linear` = plays images in order
 - `random` = randomizes the next image
+- 'cover' = fills screen (may crop)
+- 'contain' = shows full image (may have borders)
 
 ## Setup (First Time)
 
