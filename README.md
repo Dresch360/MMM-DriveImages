@@ -121,14 +121,14 @@ MagicMirror will restart automatically.
 
 ---
 
-## Adding Photos
+## Adding Images
 
 ### Smartphone (Recommended)
 
 1. Open the Google Drive app
 2. Open the folder: `mirror-images`
 3. Tap `+` → Upload
-4. Press and hold one photo, then select multiple
+4. Press and hold one image, then select multiple
 5. Tap Select → Upload
 
 Images will appear automatically within a few minutes.
@@ -150,7 +150,7 @@ Images will appear automatically within a few minutes.
 * Supported formats: JPG, PNG, GIF, WEBP
 * Updates happen automatically (~2 minutes)
 * No setup required after initial connection
-* If no photos appear, upload images to the `mirror-images` folder
+* If no images appear, upload images to the `mirror-images` folder
 
 ---
 
