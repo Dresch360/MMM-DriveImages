@@ -99,7 +99,10 @@ Add this to your `config.js`:
 3. Run:
 
 ```bash
-~/MagicMirror/modules/MMM-DriveImages/connect
+
+cd ~/MagicMirror/modules/MMM-DriveImages
+./connect
+
 ```
 
 4. Follow prompts:
