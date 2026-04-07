@@ -1,7 +1,7 @@
 # MMM-DriveImages
 ## Preview
 
-![MMM-DriveImages Screenshot](screenshot.png)
+<img src="screenshot.png" width="500">
 
 MagicMirror module that displays images from a Google Drive folder using rclone.
 
