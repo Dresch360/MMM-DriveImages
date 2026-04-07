@@ -83,6 +83,7 @@ Add this to your `config.js`:
 | `playMode`          | Playback order for images                | `"linear"`              |
 | `touchControls`     | Enable tap to pause and swipe navigation | `true`                  |
 | `objectFit`         | Image fit mode (`"cover"` = fill screen, `"contain"` = no cropping) | `"cover"`|
+| `showArrows`        | Show or hide left/right navigation arrows | `true`                  |
 | `arrowOpacity`      | Controls arrow visibility (0.0 to 1.0)   | `0.3`                  |
 | `arrowFontSize`     | Controls arrow size in pixels            | `40`                   |
 
