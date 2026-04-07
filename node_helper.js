@@ -1,120 +1,95 @@
-Module.register("MMM-DriveImages", {
-  defaults: {
-    syncInterval: 2 * 60 * 1000,
-    syncOnStart: true,
-    syncTimeout: 120000,
-    driveRemote: "drive:mirror-images",
-    imagePath: "/home/pi/MagicMirror/modules/MMM-DriveImages/public/images",
-    slideshowInterval: 10000,
-    animationSpeed: 1000,
-    playMode: "linear",
-    tapToAdvance: true
-  },
+const NodeHelper = require("node_helper");
+const { exec } = require("child_process");
+const fs = require("fs");
+const path = require("path");
 
+module.exports = NodeHelper.create({
   start: function () {
-    this.images = [];
-    this.currentIndex = 0;
-    this.loaded = false;
+    this.config = {
+      syncInterval: 2 * 60 * 1000,
+      driveRemote: "drive:mirror-images"
+    };
 
-    this.sendSocketNotification("MMM_DRIVEIMAGES_CONFIG", {
-      syncInterval: this.config.syncInterval,
-      syncOnStart: this.config.syncOnStart,
-      syncTimeout: this.config.syncTimeout,
-      driveRemote: this.config.driveRemote,
-      imagePath: this.config.imagePath,
-      rcloneBinary: this.config.rcloneBinary || "rclone"
-    });
-
-    this.startSlideshow();
-  },
-
-  getNextIndex: function () {
-    if (!this.images || this.images.length === 0) {
-      return 0;
-    }
-
-    if (this.config.playMode === "random") {
-      if (this.images.length === 1) {
-        return 0;
-      }
-
-      let next;
-      do {
-        next = Math.floor(Math.random() * this.images.length);
-      } while (next === this.currentIndex);
-
-      return next;
-    }
-
-    return (this.currentIndex + 1) % this.images.length;
-  },
-
-  showNextImage: function () {
-    if (this.images.length > 1) {
-      this.currentIndex = this.getNextIndex();
-      this.updateDom(this.config.animationSpeed);
-    }
-  },
-
-  startSlideshow: function () {
-    setInterval(() => {
-      this.showNextImage();
-    }, this.config.slideshowInterval);
-  },
-
-  getDom: function () {
-    const wrapper = document.createElement("div");
-
-    if (!this.loaded) {
-      wrapper.innerHTML = "Loading images...";
-      return wrapper;
-    }
-
-    if (!this.images.length) {
-      wrapper.innerHTML = "No images found";
-      return wrapper;
-    }
-
-    const img = document.createElement("img");
-    img.src = this.images[this.currentIndex];
-    img.style.maxWidth = "100%";
-    img.style.height = "auto";
-    img.style.display = "block";
-
-    if (this.config.tapToAdvance) {
-      img.style.cursor = "pointer";
-
-      img.addEventListener("click", () => {
-        this.showNextImage();
-      });
-
-      img.addEventListener("touchstart", () => {
-        this.showNextImage();
-      }, { passive: true });
-    }
-
-    wrapper.appendChild(img);
-    return wrapper;
+    this.syncTimer = null;
+    this.syncInProgress = false;
   },
 
   socketNotificationReceived: function (notification, payload) {
-    if (notification === "MMM_DRIVEIMAGES_IMAGES") {
-      const oldCurrent = this.images[this.currentIndex] || null;
-      this.images = payload.images || [];
-      this.loaded = true;
+    if (notification === "MMM_DRIVEIMAGES_CONFIG") {
+      this.config = Object.assign({}, this.config, payload || {});
+      this.startSyncLoop();
+    }
+  },
 
-      if (!this.images.length) {
-        this.currentIndex = 0;
-      } else {
-        const existingIndex = oldCurrent ? this.images.indexOf(oldCurrent) : -1;
-        this.currentIndex = existingIndex >= 0 ? existingIndex : 0;
-      }
-
-      this.updateDom(this.config.animationSpeed);
+  startSyncLoop: function () {
+    if (this.syncTimer) {
+      clearInterval(this.syncTimer);
+      this.syncTimer = null;
     }
 
-    if (notification === "MMM_DRIVEIMAGES_SYNC_ERROR") {
-      console.error("[MMM-DriveImages] sync error:", payload);
+    this.syncImages();
+
+    this.syncTimer = setInterval(() => {
+      this.syncImages();
+    }, this.config.syncInterval);
+  },
+
+  syncImages: function () {
+    if (this.syncInProgress) {
+      console.log("MMM-DriveImages: Sync already in progress, skipping");
+      return;
+    }
+
+    this.syncInProgress = true;
+
+    const localPath = path.join(this.path, "public", "images");
+    const remotePath = this.config.driveRemote || "drive:mirror-images";
+
+    try {
+      fs.mkdirSync(localPath, { recursive: true });
+    } catch (e) {
+      console.error("MMM-DriveImages: Failed to create local images folder", e);
+      this.syncInProgress = false;
+      return;
+    }
+
+    const command = `rclone sync "${remotePath}" "${localPath}"`;
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error("MMM-DriveImages: rclone sync failed:", error.message);
+      }
+
+      if (stderr) {
+        console.error("MMM-DriveImages: rclone stderr:", stderr);
+      }
+
+      if (stdout) {
+        console.log("MMM-DriveImages: rclone stdout:", stdout);
+      }
+
+      const images = this.getImageList(localPath);
+      this.sendSocketNotification("MMM_DRIVEIMAGES_IMAGES", { images });
+
+      this.syncInProgress = false;
+    });
+  },
+
+  getImageList: function (imageDir) {
+    try {
+      const files = fs.readdirSync(imageDir);
+
+      return files
+        .filter((file) => {
+          const fullPath = path.join(imageDir, file);
+          return fs.statSync(fullPath).isFile();
+        })
+        .filter((file) => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
+        .sort()
+        .map((file) => `/modules/MMM-DriveImages/public/images/${encodeURIComponent(file)}`);
+    } catch (e) {
+      console.error("MMM-DriveImages: Error reading images folder", e);
+      return [];
     }
   }
 });
