@@ -113,7 +113,7 @@ Add this to your `config.js`:
 4. Follow prompts:
 
 * Type `y` to authenticate
-* Sign into your Google account
+* A browser window will open. Sign into your Google account
 * Return to Terminal
 * Type `n` for Shared Drive
 
