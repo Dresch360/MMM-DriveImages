@@ -131,7 +131,7 @@ MagicMirror will restart automatically.
 4. Press and hold one image, then select multiple
 5. Tap Select → Upload
 
-Images will appear automatically within a few minutes.
+Images will appear automatically in ~2 minutes.
 
 ---
 
