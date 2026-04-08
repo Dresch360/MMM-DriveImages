@@ -18,9 +18,10 @@ No API keys. No Google developer setup. Simple browser-based authentication.
 - Linear or random playback modes  
 - Tap or click to pause and resume slideshow  
 - Swipe left or right to navigate images  
-- Configurable image fit (`landscape` or `portrait`)  
 - Designed for non-technical users
-- Configurable navigation arrows    
+- Configurable navigation arrows
+- Configurable image layout (portrait or landscape)
+- Adjustable image scaling (% based sizing)    
 
 ---
 
@@ -67,7 +68,6 @@ Add this to your `config.js`:
     showArrows: true,          // click left/right arrows for previous or next image
     arrowOpacity: 0.3,        // controls arrow visibility (0.0 to 1.0)
     arrowFontSize: 40,         // controls arrow size in pixels
-    screenMode: "portrait",   // "portrait" or "landscape"
     objectFit: "",            // Optional override: "cover" or "contain" (leave blank to use screenMode)
     screenMode: "portrait",   // "portrait" = full image (contain), "landscape" = fill screen (cover)
     imageScale: 100           // Image size as % (100 = full, 80 = smaller, 120 = zoom)
