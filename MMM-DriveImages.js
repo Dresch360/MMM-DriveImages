@@ -8,128 +8,177 @@ Module.register("MMM-DriveImages", {
     slideshowInterval: 10000,
     animationSpeed: 1000,
     playMode: "linear",
-    tapToAdvance: true,
-
-    // Arrow controls
-    arrowOpacity: 0.15,
-    arrowFontSize: 40
+    touchControls: true,
+    objectFit: "",
+    showArrows: true,
+    screenMode: "portrait"
   },
 
   start: function () {
     this.images = [];
     this.currentIndex = 0;
     this.loaded = false;
+    this.paused = false;
 
     this.sendSocketNotification("MMM_DRIVEIMAGES_CONFIG", {
       syncInterval: this.config.syncInterval,
       syncOnStart: this.config.syncOnStart,
       syncTimeout: this.config.syncTimeout,
       driveRemote: this.config.driveRemote,
-      imagePath: this.config.imagePath
+      imagePath: this.config.imagePath,
+      rcloneBinary: this.config.rcloneBinary || "rclone"
     });
 
-    this.scheduleUpdate();
+    this.startSlideshow();
   },
 
-  scheduleUpdate: function () {
-    setInterval(() => {
-      if (this.images.length > 0) {
-        this.nextImage();
-      }
-    }, this.config.slideshowInterval);
+  getNextIndex: function () {
+    if (!this.images || this.images.length === 0) return 0;
+
+    if (this.config.playMode === "random") {
+      if (this.images.length === 1) return 0;
+
+      let next;
+      do {
+        next = Math.floor(Math.random() * this.images.length);
+      } while (next === this.currentIndex);
+
+      return next;
+    }
+
+    return (this.currentIndex + 1) % this.images.length;
   },
 
-  socketNotificationReceived: function (notification, payload) {
-    if (notification === "MMM_DRIVEIMAGES_IMAGES") {
-      this.images = payload;
-      this.loaded = true;
+  showNextImage: function () {
+    if (this.images.length > 1) {
+      this.currentIndex = this.getNextIndex();
       this.updateDom(this.config.animationSpeed);
     }
   },
 
+  showPrevImage: function () {
+    if (this.images.length > 1) {
+      this.currentIndex =
+        (this.currentIndex - 1 + this.images.length) % this.images.length;
+      this.updateDom(this.config.animationSpeed);
+    }
+  },
+
+  startSlideshow: function () {
+    setInterval(() => {
+      if (!this.paused) {
+        this.showNextImage();
+      }
+    }, this.config.slideshowInterval);
+  },
+
   getDom: function () {
     const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
+    wrapper.style.width = "100%";
+    wrapper.style.height = "100vh";
+    wrapper.style.display = "flex";
+    wrapper.style.justifyContent = "center";
+    wrapper.style.alignItems = "center";
+    wrapper.style.overflow = "hidden";
 
     if (!this.loaded) {
       wrapper.innerHTML = "Loading images...";
       return wrapper;
     }
 
-    if (this.images.length === 0) {
-      wrapper.innerHTML = "No images found.";
+    if (!this.images.length) {
+      wrapper.innerHTML = "No images found";
       return wrapper;
     }
 
     const img = document.createElement("img");
     img.src = this.images[this.currentIndex];
-    img.style.width = "100%";
-    img.style.height = "auto";
+    img.style.maxWidth = "100%";
+    img.style.maxHeight = "100%";
+    const fitMode = this.config.objectFit || (this.config.screenMode === "landscape" ? "cover" : "contain");
+    img.style.objectFit = fitMode;
 
-    if (this.config.tapToAdvance) {
-      img.addEventListener("click", () => {
-        this.nextImage();
+    // Touch + click behavior
+    if (this.config.touchControls) {
+      let startX = 0;
+
+      img.addEventListener("touchstart", (e) => {
+        startX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      img.addEventListener("touchend", (e) => {
+        const endX = e.changedTouches[0].screenX;
+        const diff = endX - startX;
+
+        if (Math.abs(diff) > 50) {
+          diff < 0 ? this.showNextImage() : this.showPrevImage();
+        } else {
+          this.paused = !this.paused;
+        }
+      }, { passive: true });
+
+      img.addEventListener("pointerup", (e) => {
+        if (e.pointerType === "mouse") {
+          this.paused = !this.paused;
+        }
       });
     }
 
     wrapper.appendChild(img);
 
-    // LEFT ARROW
-    const leftArrow = document.createElement("div");
-    leftArrow.innerHTML = "◀";
-    leftArrow.style.position = "absolute";
-    leftArrow.style.left = "10px";
-    leftArrow.style.top = "50%";
-    leftArrow.style.transform = "translateY(-50%)";
-    leftArrow.style.cursor = "pointer";
-    leftArrow.style.userSelect = "none";
-    leftArrow.style.opacity = this.config.arrowOpacity.toString();
-    leftArrow.style.fontSize = this.config.arrowFontSize + "px";
+    // Arrows
+    if (this.config.showArrows && this.images.length > 1) {
+      const createArrow = (dir) => {
+        const arrow = document.createElement("div");
+        arrow.innerHTML = dir === "left" ? "◀" : "▶";
 
-    leftArrow.addEventListener("click", () => {
-      this.prevImage();
-    });
+        arrow.style.position = "absolute";
+        arrow.style.top = "50%";
+        arrow.style[dir === "left" ? "left" : "right"] = "20px";
+        arrow.style.transform = "translateY(-50%)";
+        arrow.style.fontSize = this.config.arrowFontSize + "px";
+        arrow.style.color = "white";
+        arrow.style.background = "rgba(0,0,0,0.3)";
+        arrow.style.padding = "10px";
+        arrow.style.cursor = "pointer";
+        arrow.style.userSelect = "none";
+        arrow.style.opacity = this.config.arrowOpacity.toString();
+        arrow.style.background = "transparent";
+        arrow.style.fontSize = this.config.arrowFontSize + "px";
 
-    // RIGHT ARROW
-    const rightArrow = document.createElement("div");
-    rightArrow.innerHTML = "▶";
-    rightArrow.style.position = "absolute";
-    rightArrow.style.right = "10px";
-    rightArrow.style.top = "50%";
-    rightArrow.style.transform = "translateY(-50%)";
-    rightArrow.style.cursor = "pointer";
-    rightArrow.style.userSelect = "none";
-    rightArrow.style.opacity = this.config.arrowOpacity.toString();
-    rightArrow.style.fontSize = this.config.arrowFontSize + "px";
+        arrow.addEventListener("click", () => {
+          dir === "left" ? this.showPrevImage() : this.showNextImage();
+        });
 
-    rightArrow.addEventListener("click", () => {
-      this.nextImage();
-    });
+        return arrow;
+      };
 
-    wrapper.style.position = "relative";
-    wrapper.appendChild(leftArrow);
-    wrapper.appendChild(rightArrow);
+      wrapper.appendChild(createArrow("left"));
+      wrapper.appendChild(createArrow("right"));
+    }
 
     return wrapper;
   },
 
-  nextImage: function () {
-    if (this.images.length === 0) return;
+  socketNotificationReceived: function (notification, payload) {
+    if (notification === "MMM_DRIVEIMAGES_IMAGES") {
+      const oldCurrent = this.images[this.currentIndex] || null;
+      this.images = payload.images || [];
+      this.loaded = true;
 
-    if (this.config.playMode === "random") {
-      this.currentIndex = Math.floor(Math.random() * this.images.length);
-    } else {
-      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+      if (!this.images.length) {
+        this.currentIndex = 0;
+      } else {
+        const existingIndex = oldCurrent ? this.images.indexOf(oldCurrent) : -1;
+        this.currentIndex = existingIndex >= 0 ? existingIndex : 0;
+      }
+
+      this.updateDom(this.config.animationSpeed);
     }
 
-    this.updateDom(this.config.animationSpeed);
-  },
-
-  prevImage: function () {
-    if (this.images.length === 0) return;
-
-    this.currentIndex =
-      (this.currentIndex - 1 + this.images.length) % this.images.length;
-
-    this.updateDom(this.config.animationSpeed);
+    if (notification === "MMM_DRIVEIMAGES_SYNC_ERROR") {
+      console.error("[MMM-DriveImages] sync error:", payload);
+    }
   }
 });
