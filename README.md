@@ -18,7 +18,7 @@ No API keys. No Google developer setup. Simple browser-based authentication.
 - Linear or random playback modes  
 - Tap or click to pause and resume slideshow  
 - Swipe left or right to navigate images  
-- Configurable image fit (`cover` or `contain`)  
+- Configurable image fit (`landscape` or `portrait`)  
 - Designed for non-technical users
 - Configurable navigation arrows    
 
@@ -64,7 +64,7 @@ Add this to your `config.js`:
     animationSpeed: 1000,
     playMode: "linear",       //"linear" or "random"
     touchControls: true,      // enable tap + swipe controls
-    objectFit: "cover",       // "cover" or "contain"
+    screenMode: "portrait",   // "portrait" or "landscape"
     showArrows: true,          // click left/right arrows for previous or next image
     arrowOpacity: 0.3,        // controls arrow visibility (0.0 to 1.0)
     arrowFontSize: 40         // controls arrow size in pixels
@@ -82,7 +82,7 @@ Add this to your `config.js`:
 | `animationSpeed`    | Transition speed between images (ms)     | `1000`                  |
 | `playMode`          | Playback order for images                | `"linear"`              |
 | `touchControls`     | Enable tap to pause and swipe navigation | `true`                  |
-| `objectFit`         | Image fit mode (`"cover"` = fill screen, `"contain"` = no cropping) | `"cover"`|
+| `screenMode` | Screen orientation (controls image fit) | `"portrait"` |
 | `showArrows`        | Show or hide left/right navigation arrows | `true`                  |
 | `arrowOpacity`      | Controls arrow visibility (0.0 to 1.0)   | `0.3`                  |
 | `arrowFontSize`     | Controls arrow size in pixels            | `40`                   |
@@ -92,8 +92,7 @@ Add this to your `config.js`:
 ### Playback Modes
 - `linear` = plays images in order
 - `random` = randomizes the next image
-- `cover` = fills screen (may crop)
-- `contain` = shows full image (may have borders)
+
 
 ## Setup (First Time)
 
