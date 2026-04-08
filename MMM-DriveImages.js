@@ -11,7 +11,8 @@ Module.register("MMM-DriveImages", {
     touchControls: true,
     objectFit: "",
     showArrows: true,
-    screenMode: "portrait"
+    screenMode: "portrait",
+    imageScale: 100
   },
 
   start: function () {
@@ -94,8 +95,9 @@ Module.register("MMM-DriveImages", {
 
     const img = document.createElement("img");
     img.src = this.images[this.currentIndex];
-    img.style.maxWidth = "100%";
-    img.style.maxHeight = "100%";
+    const scale = this.config.imageScale || 100;
+    img.style.maxWidth = scale + "%";
+    img.style.maxHeight = scale + "%";
     const fitMode = this.config.objectFit || (this.config.screenMode === "landscape" ? "cover" : "contain");
     img.style.objectFit = fitMode;
 
