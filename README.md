@@ -55,19 +55,22 @@ Add this to your `config.js`:
   module: "MMM-DriveImages",
   position: "fullscreen_above",
   config: {
-    driveRemote: "drive:mirror-images",
-    imagePath: "/home/pi/MagicMirror/modules/MMM-DriveImages/public/images",
-    syncInterval: 2 * 60 * 1000,
-    syncOnStart: true,
-    syncTimeout: 120000,
-    slideshowInterval: 10000,
-    animationSpeed: 1000,
+    driveRemote: "drive:mirror-images", // Google Drive folder (via rclone)
+    imagePath: "/home/pi/MagicMirror/modules/MMM-DriveImages/public/images", // Local image storage path
+    syncInterval: 2 * 60 * 1000, // Time between Google Drive syncs (ms)
+    syncOnStart: true,         // Sync immediately when MagicMirror starts
+    syncTimeout: 120000,      // Max time allowed for each sync (ms)
+    slideshowInterval: 10000,  // Time each image is displayed (ms)
+    animationSpeed: 1000,     // Transition/update speed (ms)
     playMode: "linear",       //"linear" or "random"
     touchControls: true,      // enable tap + swipe controls
-    screenMode: "portrait",   // "portrait" or "landscape"
     showArrows: true,          // click left/right arrows for previous or next image
     arrowOpacity: 0.3,        // controls arrow visibility (0.0 to 1.0)
-    arrowFontSize: 40         // controls arrow size in pixels
+    arrowFontSize: 40,         // controls arrow size in pixels
+    screenMode: "portrait",   // "portrait" or "landscape"
+    objectFit: "",            // Optional override: "cover" or "contain" (leave blank to use screenMode)
+    screenMode: "portrait",   // "portrait" = full image (contain), "landscape" = fill screen (cover)
+    imageScale: 100           // Image size as % (100 = full, 80 = smaller, 120 = zoom)
   }
 },
 ```
@@ -86,6 +89,7 @@ Add this to your `config.js`:
 | `showArrows`        | Show or hide left/right navigation arrows | `true`                  |
 | `arrowOpacity`      | Controls arrow visibility (0.0 to 1.0)   | `0.3`                  |
 | `arrowFontSize`     | Controls arrow size in pixels            | `40`                   |
+| `imageScale` | Image size as a percentage of available space | `100` |
 
 ---
 
